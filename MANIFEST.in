@@ -1,0 +1,3 @@
+recursive-include pretix_bazne_cijene/static *
+recursive-include pretix_bazne_cijene/templates *
+recursive-include pretix_bazne_cijene/locale *

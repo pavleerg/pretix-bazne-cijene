@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="hr"><head><meta charset="utf-8"><title>Cjenik usluga – {{ title_name }}</title></head>
+<body>
+<h1>Cjenik usluga</h1>
+<p>{% if seller %}{{ seller }}, {% endif %}OIB {{ oib }}</p>
+<h2>Važeći cjenik</h2>
+<p><a href="{{ current_url }}">{{ current_name }}</a></p>
+<h2>Arhiva (prethodni cjenici, {{ retention_days }} dana)</h2>
+<ul>
+{% for a in archive %}<li><a href="{{ a.url }}">{{ a.name }}</a> (zamijenjen {{ a.replaced }})</li>
+{% endfor %}</ul>
+</body></html>

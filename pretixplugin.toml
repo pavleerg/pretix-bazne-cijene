@@ -1,0 +1,4 @@
+[plugin]
+package = "pretix-bazne-cijene"
+modules = [ "pretix_bazne_cijene" ]
+marketplace_name = "bazne-cijene"

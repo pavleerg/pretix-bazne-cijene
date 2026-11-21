@@ -1,0 +1,56 @@
+{% extends "pretixcontrol/organizers/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block title %}{% trans "Bazne cijene" %}{% endblock %}
+{% block inner %}
+    <h1>{% trans "Bazne cijene" %}</h1>
+    {% if not plugin_enabled %}
+        <div class="alert alert-warning">
+            {% trans "The plugin is not enabled for this organizer, so nothing is shown in the shop yet." %}
+        </div>
+    {% endif %}
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <fieldset>
+            <legend>{% trans "Base price label" %}</legend>
+            {% bootstrap_field form.bazne_cijene_label layout="control" %}
+        </fieldset>
+        <fieldset>
+            <legend>{% trans "Price list" %}</legend>
+            {% bootstrap_field form.bazne_cijene_pricelist_enabled layout="control" %}
+            {% bootstrap_field form.bazne_cijene_seller_name layout="control" %}
+            {% bootstrap_field form.bazne_cijene_seller_address layout="control" %}
+            {% bootstrap_field form.bazne_cijene_oib layout="control" %}
+            {% bootstrap_field form.bazne_cijene_pricelist_seq_offset layout="control" %}
+            {% bootstrap_field form.bazne_cijene_notify_email layout="control" %}
+            <div class="form-group">
+                <label class="col-md-3 control-label">{% trans "Public addresses" %}</label>
+                <div class="col-md-9">
+                    <ul class="list-unstyled form-control-static">
+                        <li>{% trans "Current price list (CSV)" %}: <a href="{{ public_url }}" target="_blank">{{ public_url }}</a></li>
+                        <li>{% trans "Price list page with archive" %}: <a href="{{ archive_url }}" target="_blank">{{ archive_url }}</a></li>
+                    </ul>
+                    <p class="help-block">
+                        {% trans "The price list is rebuilt every day at 03:00 (Zagreb time). A new file is published only if a price or the set of tickets on sale changed; changes made during the day appear at the next rebuild." %}
+                    </p>
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group submit-group">
+            <button type="submit" class="btn btn-primary btn-save">{% trans "Save" %}</button>
+        </div>
+    </form>
+    <form action="{% url "plugins:pretix_bazne_cijene:rebuild" organizer=request.organizer.slug %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend>{% trans "Rebuild now" %}</legend>
+            <p>
+                {% trans "Rebuilds the price list immediately, the same way as the daily rebuild at 03:00: a new file is published and the notification email is sent only if something changed. Save your settings first." %}
+            </p>
+            <button type="submit" class="btn btn-default">
+                <span class="fa fa-refresh"></span> {% trans "Rebuild the price list now" %}
+            </button>
+        </fieldset>
+    </form>
+{% endblock %}

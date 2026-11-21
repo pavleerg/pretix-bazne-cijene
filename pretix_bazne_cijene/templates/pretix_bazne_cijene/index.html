@@ -1,0 +1,64 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load money %}
+{% block title %}{% trans "Base prices" %}{% endblock %}
+{% block content %}
+    <h1>{% trans "Base prices" %}</h1>
+    <p>
+        {% blocktrans trimmed %}
+            The base price ("bazna cijena", ZZP Art. 7, Pravilnik NN 132/2026) is shown next to the price of every
+            ticket in the shop. It is the retail price applied on 10 September 2026, or on the day the ticket was
+            first offered if that is later, and the price before any discount applied on that day. It is recorded
+            automatically and is never changed afterwards, except by a correction below.
+        {% endblocktrans %}
+    </p>
+    {% if references %}
+        <div class="table-responsive">
+            <table class="table table-condensed table-hover">
+                <thead>
+                <tr>
+                    <th>{% trans "Product" %}</th>
+                    {% if request.event.has_subevents %}<th>{% trans "Date" context "subevent" %}</th>{% endif %}
+                    <th class="text-right">{% trans "Base price" %}</th>
+                    <th>{% trans "Reference date" %}</th>
+                    <th>{% trans "Source" %}</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ref in references %}
+                    <tr>
+                        <td>
+                            {{ ref.item.name }}{% if ref.variation %} – {{ ref.variation.value }}{% endif %}
+                            {% if ref.note %}<br><small class="text-muted">{{ ref.note|linebreaksbr }}</small>{% endif %}
+                        </td>
+                        {% if request.event.has_subevents %}<td>{{ ref.subevent|default_if_none:"" }}</td>{% endif %}
+                        <td class="text-right">{{ ref.price|money:ref.currency }}</td>
+                        <td>{{ ref.reference_date|date:"SHORT_DATE_FORMAT" }}</td>
+                        <td>
+                            {{ ref.get_source_display }}
+                        </td>
+                        <td class="text-right flip">
+                            {% if can_edit %}
+                                <a href="{% url "plugins:pretix_bazne_cijene:edit" organizer=request.organizer.slug event=request.event.slug reference=ref.pk %}"
+                                   class="btn btn-default btn-sm" title="{% trans "Correct" %}" data-toggle="tooltip">
+                                    <span class="fa fa-edit"></span>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-collection">
+            <p>
+                {% blocktrans trimmed %}
+                    No base price has been recorded yet. Base prices are recorded the first time a ticket is shown
+                    in the live shop.
+                {% endblocktrans %}
+            </p>
+        </div>
+    {% endif %}
+{% endblock %}

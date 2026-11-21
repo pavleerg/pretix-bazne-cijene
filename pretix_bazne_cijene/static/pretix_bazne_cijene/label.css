@@ -1,0 +1,46 @@
+/*
+ * ZZP čl. 7 st. 1, Pravilnik (NN 132/2026) čl. 5 st. 2-3 and čl. 6: at the same place as
+ * the retail price, but clearly distinct from it. Wide screens lift the label under the
+ * price column; phones and browsers without :has() keep it in the description.
+ */
+
+.bazne-cijene-label {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.9em;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1.4;
+    color: #555;
+}
+
+@media (min-width: 768px) {
+    .product-row:has(.bazne-cijene-label) {
+        position: relative;
+        padding-bottom: calc(1.25 * 20px + 1.6em);
+    }
+
+    .product-row:has(.bazne-cijene-label) > div:first-child {
+        /* Let the label position itself against the row, not the column. */
+        position: static;
+    }
+
+    .product-row:has(.bazne-cijene-label) .bazne-cijene-label {
+        position: absolute;
+        bottom: calc(1.25 * 20px);
+        /* Description column (col-sm-6) ends at 50%, price column (col-sm-3) at 75%. */
+        left: 25%;
+        width: 50%;
+        margin: 0;
+        padding: 0 15px;
+        text-align: right;
+    }
+}
+
+@media (min-width: 992px) {
+    .product-row:has(.bazne-cijene-label) .bazne-cijene-label {
+        /* Description column (col-md-8) ends at 66.67%, price column (col-md-2) at 83.33%. */
+        left: 33.33333333%;
+        width: 50%;
+    }
+}

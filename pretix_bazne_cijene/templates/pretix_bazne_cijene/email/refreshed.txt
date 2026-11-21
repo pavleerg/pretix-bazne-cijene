@@ -1,0 +1,17 @@
+{% autoescape off %}Objavljen je novi cjenik usluga: {{ name }}
+{% if previous_name %}Zamjenjuje: {{ previous_name }}
+{% endif %}
+Važeći cjenik: {{ csv_url }}
+Stranica s arhivom: {{ page_url }}
+
+Trenutno stanje (broj usluga: {{ row_count }}):
+{% for line in lines %}{{ line }}
+{% endfor %}
+Promjene u odnosu na prethodni cjenik:
+{% if not previous_name %}Ovo je prvi cjenik, nema prethodnog.
+{% elif not added and not removed %}Promijenjen je samo redoslijed redova.
+{% else %}{% for line in added %}+ {{ line }}
+{% endfor %}{% for line in removed %}- {{ line }}
+{% endfor %}{% if added and removed %}
+(+ novi ili promijenjeni red, - uklonjeni ili prethodni red)
+{% endif %}{% endif %}{% endautoescape %}

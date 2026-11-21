@@ -1,0 +1,47 @@
+{% extends "pretixcontrol/event/base.html" %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% load money %}
+{% block title %}{% trans "Correct base price" %}{% endblock %}
+{% block content %}
+    <h1>
+        {% trans "Correct base price" %}
+        <small>{{ reference }}</small>
+    </h1>
+    <p>
+        {% blocktrans trimmed with price=reference.price|money:reference.currency date=reference.reference_date|date:"SHORT_DATE_FORMAT" source=reference.get_source_display %}
+            Current value: {{ price }} on {{ date }} ({{ source }}).
+        {% endblocktrans %}
+    </p>
+    <form action="" method="post" class="form-horizontal">
+        {% csrf_token %}
+        {% bootstrap_form_errors form %}
+        <fieldset>
+            <legend>{% trans "Correction" %}</legend>
+            {% bootstrap_field form.price layout="control" %}
+            {% bootstrap_field form.reference_date layout="control" %}
+            {% bootstrap_field form.reason layout="control" %}
+        </fieldset>
+        <div class="form-group submit-group">
+            <a href="{% url "plugins:pretix_bazne_cijene:index" organizer=request.organizer.slug event=request.event.slug %}"
+               class="btn btn-default btn-cancel">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-primary btn-save">{% trans "Save" %}</button>
+        </div>
+    </form>
+    {% if logs %}
+        <fieldset>
+            <legend>{% trans "History" %}</legend>
+            <ul class="list-group">
+                {% for log in logs %}
+                    <li class="list-group-item logentry">
+                        <p class="meta">
+                            <span class="fa fa-clock-o"></span> {{ log.datetime|date:"SHORT_DATETIME_FORMAT" }}
+                            {% if log.user %}<br><span class="fa fa-user"></span> {{ log.user.get_full_name }}{% endif %}
+                        </p>
+                        <p>{{ log.display }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </fieldset>
+    {% endif %}
+{% endblock %}
